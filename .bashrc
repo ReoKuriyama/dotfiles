@@ -1,16 +1,9 @@
-eval "$(rbenv init -)"
+source ~/.git-completion.bash
+source ~/.git-prompt.sh
 
-# added by Anaconda3 5.0.1 installer
-export PATH="/anaconda3/bin:$PATH"
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWUPSTREAM=1
+GIT_PS1_SHOWUNTRACKEDFILES=
+GIT_PS1_SHOWSTASHSTATE=1
 
-# Setting PATH for Python 3.6
-# The original version is saved in .bash_profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
-export PATH
-
-if [ -f ~/.bashrc ]; then
-        . ~/.bashrc
-fi
-
-PATH=/usr/local/git/bin:$PATH
-export PATH
+PS1="\[\e[36m\]\W$(__git_ps1)\[\e[0m\] "
