@@ -1,0 +1,61 @@
+/*
+ * Your Stylesheet
+ *
+ * This stylesheet is loaded when Atom starts up and is reloaded automatically
+ * when it is changed and saved.
+ *
+ * Add your own CSS or Less to fully customize Atom.
+ * If you are unfamiliar with Less, you can read more about it here:
+ * http://lesscss.org
+ */
+
+
+/*
+ * Examples
+ * (To see them, uncomment and save)
+ */
+
+// style the background color of the tree view
+.tree-view {
+  // background-color: whitesmoke;
+}
+
+// style the background and foreground colors on the atom-text-editor-element itself
+atom-text-editor {
+  // color: white;
+  // background-color: hsl(180, 24%, 12%);
+}
+
+// style UI elements inside atom-text-editor
+atom-text-editor .cursor {
+  // border-color: red;
+}
+
+atom-text-editor {
+    background-color: black;
+}
+
+atom-text-editor.editor {
+   .ideographic-space {
+     background-color: gray;
+   }
+}
+
+atom-workspace-axis.vertical .tab-bar .tab.active {
+    background: #212044;
+}
+
+atom-workspace-axis.vertical .tab-bar .tab {
+  background: #111213;
+}
+
+.indent-guide-improved {
+  &.indent-guide-stack {
+    background: repeating-linear-gradient(to bottom, rgba(158, 158, 158, 0.2), rgba(0, 0, 0, 0) 2px );
+
+    &.indent-guide-active {
+      background: repeating-linear-gradient(to bottom, rgb(256, 256, 256), rgba(0, 0, 0, 0) 2px );
+    }
+  }
+  background: repeating-linear-gradient(to bottom, rgba(158, 158, 158, 0.2), rgba(0, 0, 0, 0) 2px );
+}
