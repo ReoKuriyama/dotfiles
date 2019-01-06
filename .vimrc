@@ -10,6 +10,11 @@ colorscheme molokai
 highlight Normal ctermbg=NONE
 highlight LineNr ctermfg=244
 
+hi TabLineFill ctermfg=16
+hi TabLine ctermfg=251 ctermbg=16 cterm=none
+hi TabLineSel cterm=underline ctermbg=17 ctermfg=white
+hi VertSplit ctermfg=16 ctermbg=16   cterm=none
+
 " Line number
 set number
 
@@ -22,7 +27,7 @@ set shiftwidth=2
 """"""""""""""""""""""""""""""
 call plug#begin('~/.vim/plugged')
 
-Plug 'itchyny/lightline.vim'
+"Plug 'itchyny/lightline.vim'
 " File Open
 Plug 'Shougo/unite.vim'
 " Unite.vimで最近使ったファイルを表示できるようにする
@@ -36,12 +41,27 @@ Plug 'scrooloose/syntastic'
 Plug 'w0rp/ale'
 " コメントアウト "
 Plug 'scrooloose/nerdcommenter'
+Plug 'kana/vim-submode'
 
 
 call plug#end()
 """"""""""""""""""""""""""""""
 
 set laststatus=2 
+
+""""""""""""""""""""""""""""""
+" LightLine
+""""""""""""""""""""""""""""""
+let g:lightline = {
+      \ 'colorscheme': 'powerline',
+      \ 'mode_map': {'c': 'NORMAL'},
+      \ 'active': {
+      \   'left': [ ['mode', 'paste'], ['fugitive', 'filename', 'currenttag'] ],
+      \   'right': [ [ 'lineinfo',  'syntastic' ],
+      \              [ 'percent' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ }
+    \ }
 
 """"""""""""""""""""""""""""""
 " Unit.vimの設定
@@ -67,10 +87,32 @@ au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
 au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 
 au FileType unite nnoremap <silent> <buffer> i <ESC>k<CR>
+
+autocmd FileType unite nnoremap <buffer> i k
+autocmd FileType unite noremap <buffer> j h
+autocmd FileType unite noremap <buffer> k j
 """"""""""""""""""""""""""""""
 
-"NERDTreeToggle"
+" NERDTreeToggle"
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
+autocmd FileType nerdtree nnoremap <buffer> i k
+hi Directory guifg=#FF0000 ctermfg=249
+
+" NERDTress File highlighting
+function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+ exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+ exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+call NERDTreeHighlightFile('py',     'yellow',  'none', 'yellow',  '#151515')
+call NERDTreeHighlightFile('md',     'blue',    'none', '#3366FF', '#151515')
+call NERDTreeHighlightFile('yml',    'yellow',  'none', 'yellow',  '#151515')
+call NERDTreeHighlightFile('config', 'yellow',  'none', 'yellow',  '#151515')
+call NERDTreeHighlightFile('conf',   'yellow',  'none', 'yellow',  '#151515')
+call NERDTreeHighlightFile('html',   'yellow',  'none', 'yellow',  '#151515')
+call NERDTreeHighlightFile('css',    'cyan',    'none', 'cyan',    '#151515')
+call NERDTreeHighlightFile('rb',     'Red',     'none', 'red',     '#151515')
+call NERDTreeHighlightFile('js',     'lightgreen',   'none', '#CCFFCC', '#CCFFCC')
 
 
 "Window keybinding"
@@ -98,6 +140,15 @@ nnoremap ss :<C-u>sp<CR>
 nnoremap sv :<C-u>vs<CR>
 nnoremap sq :<C-u>q!<CR>
 nnoremap sQ :<C-u>bd<CR>
+
+call submode#enter_with('bufmove', 'n', '', 's>', '<C-w>>')
+call submode#enter_with('bufmove', 'n', '', 's<', '<C-w><')
+call submode#enter_with('bufmove', 'n', '', 's+', '<C-w>+')
+call submode#enter_with('bufmove', 'n', '', 's-', '<C-w>-')
+call submode#map('bufmove', 'n', '', '>', '<C-w>>')
+call submode#map('bufmove', 'n', '', '<', '<C-w><')
+call submode#map('bufmove', 'n', '', '+', '<C-w>+')
+call submode#map('bufmove', 'n', '', '-', '<C-w>-')
 nnoremap <D-...> l
 
 "バッファ移動"
@@ -116,5 +167,9 @@ noremap k j
 noremap <C-j> ^
 noremap <C-l> $
 
+"insert mode"
+noremap oo a
+noremap h i
+
 "save"
-noremap qq :w<CR>
+inoremap ss <esc>:w<CR>
