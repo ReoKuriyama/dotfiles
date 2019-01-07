@@ -43,11 +43,13 @@ Plug 'w0rp/ale'
 Plug 'scrooloose/nerdcommenter'
 Plug 'kana/vim-submode'
 
+Plug 'terryma/vim-multiple-cursors'
+
 
 call plug#end()
 """"""""""""""""""""""""""""""
 
-set laststatus=2 
+set laststatus=2
 
 """"""""""""""""""""""""""""""
 " LightLine
@@ -125,8 +127,8 @@ nnoremap sK <C-w>J
 nnoremap sI <C-w>K
 nnoremap sL <C-w>L
 nnoremap sJ <C-w>H
-nnoremap sn gt
-nnoremap sp gT
+nnoremap al gt
+nnoremap aj gT
 nnoremap sr <C-w>r
 nnoremap s= <C-w>=
 nnoremap sw <C-w>w
@@ -173,3 +175,4 @@ noremap h i
 
 "save"
 inoremap ss <esc>:w<CR>
+noremap qq :w<CR>
