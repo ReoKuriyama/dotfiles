@@ -1,3 +1,4 @@
+set encoding=utf-8
 " Color
 
 autocmd ColorScheme * highlight Normal ctermbg=none
@@ -11,9 +12,21 @@ highlight Normal ctermbg=NONE
 highlight LineNr ctermfg=244
 
 hi TabLineFill ctermfg=16
-hi TabLine ctermfg=251 ctermbg=16 cterm=none
+hi TabLine ctermfg=251 ctermbg=235 cterm=none
 hi TabLineSel cterm=underline ctermbg=17 ctermfg=white
 hi VertSplit ctermfg=16 ctermbg=16   cterm=none
+
+hi StatusLine ctermfg=17
+hi StatusLineNC ctermfg=256 ctermbg=251
+
+" for performance
+set re=1
+set nocursorline
+set norelativenumber
+set nocursorcolumn
+set guicursor=
+" set synmaxcol=180
+" syntax sync minlines=100 maxlines=1000
 
 " Line number
 set number
@@ -21,6 +34,19 @@ set number
 set expandtab
 set tabstop=2
 set shiftwidth=2
+
+set incsearch
+set clipboard+=unnamed
+
+set backspace=indent,eol,start
+
+function! CopyPath()
+  let @*=expand('%')
+endfunction
+
+command! CopyPath     call CopyPath()
+
+nnoremap <silent>cp :CopyPath<CR>
 
 """"""""""""""""""""""""""""""
 " Plugin
@@ -44,7 +70,11 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'kana/vim-submode'
 
 Plug 'terryma/vim-multiple-cursors'
+Plug 'slim-template/vim-slim'
+Plug 'thinca/vim-ref'
 
+Plug 'kchmck/vim-coffee-script'
+Plug 'tpope/vim-fugitive'
 
 call plug#end()
 """"""""""""""""""""""""""""""
@@ -116,6 +146,30 @@ call NERDTreeHighlightFile('css',    'cyan',    'none', 'cyan',    '#151515')
 call NERDTreeHighlightFile('rb',     'Red',     'none', 'red',     '#151515')
 call NERDTreeHighlightFile('js',     'lightgreen',   'none', '#CCFFCC', '#CCFFCC')
 
+" ステータスラインの表示
+  set statusline=%<     " 行が長すぎるときに切り詰める位置
+  set statusline+=[%n]  " バッファ番号
+  set statusline+=%m    " %m 修正フラグ
+  set statusline+=%r    " %r 読み込み専用フラグ
+  set statusline+=%h    " %h ヘルプバッファフラグ
+  set statusline+=%w    " %w プレビューウィンドウフラグ
+  set statusline+=\     " 空白スペース
+  set statusline+=%f    " ファイル名のみ
+  set statusline+=%=    " 左寄せ項目と右寄せ項目の区切り
+  set statusline+=%{fugitive#statusline()}  " Gitのブランチ名を表示
+  set statusline+=\ \   " 空白スペース2個
+  set statusline+=%1l   " 何行目にカーソルがあるか
+  set statusline+=/
+  set statusline+=%L    " バッファ内の総行数
+  set statusline+=,
+  set statusline+=%c    " 何列目にカーソルがあるか
+  set statusline+=%V    " 画面上の何列目にカーソルがあるか
+
+let g:ref_refe_cmd = $HOME.'/.rbenv/shims/refe' "refeコマンドのパス
+
+"insertmode時のキーマップ"
+inoremap s s
+inoremap ss ss
 
 "Window keybinding"
 nnoremap s <Nop>
@@ -127,8 +181,8 @@ nnoremap sK <C-w>J
 nnoremap sI <C-w>K
 nnoremap sL <C-w>L
 nnoremap sJ <C-w>H
-nnoremap al gt
-nnoremap aj gT
+nnoremap <C-l> gt
+nnoremap <C-j> gT
 nnoremap sr <C-w>r
 nnoremap s= <C-w>=
 nnoremap sw <C-w>w
@@ -166,13 +220,18 @@ noremap oo a
 noremap i k
 noremap j h
 noremap k j
-noremap <C-j> ^
-noremap <C-l> $
+noremap aj ^
+noremap al $
+noremap <C-i> 50k
+noremap <C-k> 50j
 
 "insert mode"
 noremap oo a
 noremap h i
 
+"挿入"
+nnoremap 0 :<C-u>call append(expand('.'), '')<Cr>j
+
 "save"
-inoremap ss <esc>:w<CR>
+inoremap qq <esc>:w<CR>
 noremap qq :w<CR>
