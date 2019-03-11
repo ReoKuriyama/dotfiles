@@ -12,12 +12,14 @@ highlight Normal ctermbg=NONE
 highlight LineNr ctermfg=244
 
 hi TabLineFill ctermfg=16
-hi TabLine ctermfg=251 ctermbg=235 cterm=none
+hi TabLine ctermfg=251 ctermbg=16 cterm=none
 hi TabLineSel cterm=underline ctermbg=17 ctermfg=white
 hi VertSplit ctermfg=16 ctermbg=16   cterm=none
 
 hi StatusLine ctermfg=17
 hi StatusLineNC ctermfg=256 ctermbg=251
+
+hi CursorLineNr term=bold   cterm=NONE ctermfg=white ctermbg=NONE
 
 " for performance
 set re=1
@@ -30,6 +32,8 @@ set guicursor=
 
 " Line number
 set number
+set cursorline
+hi clear CursorLine
 
 set expandtab
 set tabstop=2
@@ -75,6 +79,16 @@ Plug 'thinca/vim-ref'
 
 Plug 'kchmck/vim-coffee-script'
 Plug 'tpope/vim-fugitive'
+
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
+let g:deoplete#enable_at_startup = 1
 
 call plug#end()
 """"""""""""""""""""""""""""""
@@ -148,7 +162,6 @@ call NERDTreeHighlightFile('js',     'lightgreen',   'none', '#CCFFCC', '#CCFFCC
 
 " ステータスラインの表示
   set statusline=%<     " 行が長すぎるときに切り詰める位置
-  set statusline+=[%n]  " バッファ番号
   set statusline+=%m    " %m 修正フラグ
   set statusline+=%r    " %r 読み込み専用フラグ
   set statusline+=%h    " %h ヘルプバッファフラグ
@@ -156,14 +169,9 @@ call NERDTreeHighlightFile('js',     'lightgreen',   'none', '#CCFFCC', '#CCFFCC
   set statusline+=\     " 空白スペース
   set statusline+=%f    " ファイル名のみ
   set statusline+=%=    " 左寄せ項目と右寄せ項目の区切り
-  set statusline+=%{fugitive#statusline()}  " Gitのブランチ名を表示
-  set statusline+=\ \   " 空白スペース2個
-  set statusline+=%1l   " 何行目にカーソルがあるか
-  set statusline+=/
-  set statusline+=%L    " バッファ内の総行数
-  set statusline+=,
-  set statusline+=%c    " 何列目にカーソルがあるか
-  set statusline+=%V    " 画面上の何列目にカーソルがあるか
+  if winwidth(0) >= 100
+    set statusline+=%{fugitive#statusline()}  " Gitのブランチ名を表示
+  endif
 
 let g:ref_refe_cmd = $HOME.'/.rbenv/shims/refe' "refeコマンドのパス
 
@@ -183,6 +191,8 @@ nnoremap sL <C-w>L
 nnoremap sJ <C-w>H
 nnoremap <C-l> gt
 nnoremap <C-j> gT
+nnoremap tl :tabm +1<CR>
+nnoremap tj :tabm -1<CR>
 nnoremap sr <C-w>r
 nnoremap s= <C-w>=
 nnoremap sw <C-w>w
@@ -207,6 +217,9 @@ call submode#map('bufmove', 'n', '', '+', '<C-w>+')
 call submode#map('bufmove', 'n', '', '-', '<C-w>-')
 nnoremap <D-...> l
 
+"ファイル前後移動
+noremap fj <C-^>
+
 "バッファ移動"
 nnoremap <silent> bp :bprevious<CR>
 nnoremap <silent> bn :bnext<CR>
@@ -214,7 +227,6 @@ nnoremap <silent> bn :bnext<CR>
 "esc"
 inoremap jj <esc>
 vnoremap jj <esc>
-noremap oo a
 
 "移動キー"
 noremap i k
@@ -225,13 +237,22 @@ noremap al $
 noremap <C-i> 50k
 noremap <C-k> 50j
 
-"insert mode"
-noremap oo a
+"move to insert mode"
 noremap h i
+noremap oo <Esc>$a
+inoremap oo <Esc>$a
 
-"挿入"
+"単語選択
+vnoremap h iw
+noremap ff viw
+
+"空行挿入"
 nnoremap 0 :<C-u>call append(expand('.'), '')<Cr>j
 
 "save"
 inoremap qq <esc>:w<CR>
 noremap qq :w<CR>
+
+nnoremap rr :source ~/.vimrc<CR>
+
+nnoremap vim :e ~/.vimrc<CR>
