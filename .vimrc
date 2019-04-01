@@ -10,6 +10,7 @@ colorscheme molokai
 
 highlight Normal ctermbg=NONE
 highlight LineNr ctermfg=244
+highlight Visual ctermbg=161
 
 hi TabLineFill ctermfg=16
 hi TabLine ctermfg=251 ctermbg=16 cterm=none
