@@ -63,6 +63,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'Shougo/unite.vim'
 " Unite.vimで最近使ったファイルを表示できるようにする
 Plug 'Shougo/neomru.vim'
+" grep
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 " tree
 Plug 'scrooloose/nerdtree'
 " Rails向けのコマンドを提供する
@@ -114,13 +116,15 @@ let g:lightline = {
 " Unit.vimの設定
 """"""""""""""""""""""""""""""
 " 入力モードで開始する
-let g:unite_enable_start_insert=0
+let g:unite_enable_start_insert=1
 " バッファ一覧
 noremap <C-P> :Unite buffer<CR>
 " ファイル一覧
-noremap <C-N> :Unite -buffer-name=file file<CR>
+noremap <C-H> :Unite -buffer-name=file file<CR>
 " 最近使ったファイルの一覧
 noremap <C-Z> :Unite file_mru<CR>
+" grep検索
+nnoremap <silent>,g :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
 " sourcesを「今開いているファイルのディレクトリ」とする
 noremap :uff :<C-u>UniteWithBufferDir file -buffer-name=file<CR>
 " ウィンドウを分割して開く
@@ -170,9 +174,6 @@ call NERDTreeHighlightFile('js',     'lightgreen',   'none', '#CCFFCC', '#CCFFCC
   set statusline+=\     " 空白スペース
   set statusline+=%f    " ファイル名のみ
   set statusline+=%=    " 左寄せ項目と右寄せ項目の区切り
-  if winwidth(0) >= 100
-    set statusline+=%{fugitive#statusline()}  " Gitのブランチ名を表示
-  endif
 
 let g:ref_refe_cmd = $HOME.'/.rbenv/shims/refe' "refeコマンドのパス
 
@@ -246,10 +247,12 @@ inoremap oo <Esc>$a
 "単語選択
 vnoremap h iw
 noremap ff viw
+noremap ffv cw<C-r>0<ESC>
 
 "空行挿入"
 nnoremap 0 :<C-u>call append(expand('.'), '')<Cr>j
 
+noremap ee :e!<CR>
 "save"
 inoremap qq <esc>:w<CR>
 noremap qq :w<CR>
