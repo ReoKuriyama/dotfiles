@@ -10,7 +10,7 @@ colorscheme molokai
 
 highlight Normal ctermbg=NONE
 highlight LineNr ctermfg=244
-highlight Visual ctermbg=161
+highlight Visual ctermbg=248
 
 hi TabLineFill ctermfg=16
 hi TabLine ctermfg=251 ctermbg=16 cterm=none
@@ -40,13 +40,20 @@ set expandtab
 set tabstop=2
 set shiftwidth=2
 
+set noswapfile
+set wildmenu wildmode=list:full
 set incsearch
 set clipboard+=unnamed
+
+if has('persistent_undo')
+  set undodir=~/.vim/undo
+  set undofile
+endif
 
 set backspace=indent,eol,start
 
 function! CopyPath()
-  let @*=expand('%')
+  let @*=expand('%:P')
 endfunction
 
 command! CopyPath     call CopyPath()
@@ -76,12 +83,19 @@ Plug 'w0rp/ale'
 Plug 'scrooloose/nerdcommenter'
 Plug 'kana/vim-submode'
 
+Plug 'tpope/vim-endwise'
+
 Plug 'terryma/vim-multiple-cursors'
 Plug 'slim-template/vim-slim'
 Plug 'thinca/vim-ref'
 
 Plug 'kchmck/vim-coffee-script'
 Plug 'tpope/vim-fugitive'
+
+Plug 'tpope/vim-surround'
+
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -90,6 +104,9 @@ else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
+
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
 
 let g:deoplete#enable_at_startup = 1
 
@@ -121,10 +138,11 @@ let g:unite_enable_start_insert=1
 noremap <C-P> :Unite buffer<CR>
 " ファイル一覧
 noremap <C-H> :Unite -buffer-name=file file<CR>
+
 " 最近使ったファイルの一覧
 noremap <C-Z> :Unite file_mru<CR>
 " grep検索
-nnoremap <silent>,g :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+nnoremap <silent> ,g  :Unite grep<CR>
 " sourcesを「今開いているファイルのディレクトリ」とする
 noremap :uff :<C-u>UniteWithBufferDir file -buffer-name=file<CR>
 " ウィンドウを分割して開く
@@ -142,6 +160,7 @@ au FileType unite nnoremap <silent> <buffer> i <ESC>k<CR>
 autocmd FileType unite nnoremap <buffer> i k
 autocmd FileType unite noremap <buffer> j h
 autocmd FileType unite noremap <buffer> k j
+noremap cn :Unite file/new<CR>
 """"""""""""""""""""""""""""""
 
 " NERDTreeToggle"
@@ -174,6 +193,18 @@ call NERDTreeHighlightFile('js',     'lightgreen',   'none', '#CCFFCC', '#CCFFCC
   set statusline+=\     " 空白スペース
   set statusline+=%f    " ファイル名のみ
   set statusline+=%=    " 左寄せ項目と右寄せ項目の区切り
+
+let g:ale_linters = {
+      \ 'ruby': ['rubocop']
+      \ }
+
+let g:ale_fixers = {
+      \ 'ruby': ['rubocop']
+      \ }
+
+let g:ale_sign_error = '!'
+let g:ale_sign_warning = '-'
+nnoremap <C-F> :ALEFix<CR>
 
 let g:ref_refe_cmd = $HOME.'/.rbenv/shims/refe' "refeコマンドのパス
 
@@ -219,6 +250,7 @@ call submode#map('bufmove', 'n', '', '+', '<C-w>+')
 call submode#map('bufmove', 'n', '', '-', '<C-w>-')
 nnoremap <D-...> l
 
+nnoremap <C-]> g<C-]>
 "ファイル前後移動
 noremap fj <C-^>
 
@@ -228,7 +260,7 @@ nnoremap <silent> bn :bnext<CR>
 
 "esc"
 inoremap jj <esc>
-vnoremap jj <esc>
+vnoremap jl <esc>
 
 "移動キー"
 noremap i k
@@ -236,18 +268,29 @@ noremap j h
 noremap k j
 noremap aj ^
 noremap al $
+noremap <Space>l w
+noremap <Space>j b
 noremap <C-i> 50k
 noremap <C-k> 50j
+
+"変更履歴"
+nnoremap gj g;
+nnoremap gl g,
 
 "move to insert mode"
 noremap h i
 noremap oo <Esc>$a
 inoremap oo <Esc>$a
 
+"置換
+nnoremap <C-d> :%s///g
 "単語選択
 vnoremap h iw
 noremap ff viw
-noremap ffv cw<C-r>0<ESC>
+noremap ffv ciw<C-r>0<ESC>
+
+" 全体コピー
+nnoremap  <C-a>  ggV G
 
 "空行挿入"
 nnoremap 0 :<C-u>call append(expand('.'), '')<Cr>j
