@@ -292,6 +292,9 @@ noremap ffv ciw<C-r>0<ESC>
 " 全体コピー
 nnoremap  <C-a>  ggV G
 
+" 予測
+inoremap ww <C-p>
+
 "空行挿入"
 nnoremap 0 :<C-u>call append(expand('.'), '')<Cr>j
 
