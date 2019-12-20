@@ -18,7 +18,7 @@ hi TabLineSel cterm=underline ctermbg=17 ctermfg=white
 hi VertSplit ctermfg=16 ctermbg=16   cterm=none
 
 hi StatusLine ctermfg=17
-hi StatusLineNC ctermfg=256 ctermbg=251
+hi StatusLineNC ctermfg=235 ctermbg=251
 
 hi CursorLineNr term=bold   cterm=NONE ctermfg=white ctermbg=NONE
 
@@ -254,10 +254,6 @@ nnoremap <C-]> g<C-]>
 "ファイル前後移動
 noremap fj <C-^>
 
-"バッファ移動"
-nnoremap <silent> bp :bprevious<CR>
-nnoremap <silent> bn :bnext<CR>
-
 "esc"
 inoremap jj <esc>
 vnoremap jl <esc>
@@ -293,7 +289,16 @@ noremap ffv ciw<C-r>0<ESC>
 nnoremap  <C-a>  ggV G
 
 " 予測
-inoremap ww <C-p>
+inoremap nn <C-p>
+inoremap <expr> <C-k> pumvisible() ? "\<C-n>" : "\<C-k>"
+inoremap <expr> <C-i> pumvisible() ? "\<C-p>" : "\<C-i>"
+
+set completeopt=menuone
+for k in split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_",'\zs')
+  exec "imap <expr> " . k . " pumvisible() ? '" . k . "' : '" . k . "\<C-X>\<C-P>\<C-N>'"
+endfor
+
+nnoremap  <C-n> :set nonumber<CR>
 
 "空行挿入"
 nnoremap 0 :<C-u>call append(expand('.'), '')<Cr>j
