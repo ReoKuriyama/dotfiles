@@ -22,6 +22,9 @@ hi StatusLineNC ctermfg=235 ctermbg=251
 
 hi CursorLineNr term=bold   cterm=NONE ctermfg=white ctermbg=NONE
 
+hi Comment ctermfg=241
+highlight EndOfBuffer ctermfg=black ctermbg=black
+
 " for performance
 set re=1
 set nocursorline
@@ -32,7 +35,6 @@ set guicursor=
 " syntax sync minlines=100 maxlines=1000
 
 " Line number
-set number
 set cursorline
 hi clear CursorLine
 
@@ -56,14 +58,24 @@ function! CopyPath()
   let @*=expand('%:P')
 endfunction
 
+function! CopyFullPath()
+  let @*=expand('%:p')
+endfunction
+
 command! CopyPath     call CopyPath()
+command! CopyFullPath     call CopyFullPath()
 
 nnoremap <silent>cp :CopyPath<CR>
+nnoremap <silent>cfp :CopyFullPath<CR>
 
 """"""""""""""""""""""""""""""
 " Plugin
 """"""""""""""""""""""""""""""
 call plug#begin('~/.vim/plugged')
+
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+let g:go_bin_path = $GOPATH.'/bin'
+filetype plugin indent on
 
 "Plug 'itchyny/lightline.vim'
 " File Open
@@ -77,8 +89,9 @@ Plug 'scrooloose/nerdtree'
 " Rails向けのコマンドを提供する
 Plug 'tpope/vim-rails'
 " リアルタイムlint
-Plug 'scrooloose/syntastic'
 Plug 'w0rp/ale'
+
+Plug 'kamykn/spelunker.vim'
 " コメントアウト "
 Plug 'scrooloose/nerdcommenter'
 Plug 'kana/vim-submode'
@@ -94,16 +107,11 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'tpope/vim-surround'
 
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
+Plug 'airblade/vim-gitgutter'
 
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+Plug 'pangloss/vim-javascript'
+Plug 'tpope/vim-fugitive'
+Plug 'leafgarland/typescript-vim'
 
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
@@ -161,6 +169,26 @@ autocmd FileType unite nnoremap <buffer> i k
 autocmd FileType unite noremap <buffer> j h
 autocmd FileType unite noremap <buffer> k j
 noremap cn :Unite file/new<CR>
+
+" 大文字小文字を区別しない
+let g:unite_enable_ignore_case = 1
+let g:unite_enable_smart_case = 1
+
+" grep検索
+nnoremap <silent> ,g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+
+" カーソル位置の単語をgrep検索
+nnoremap <silent> ,cg :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
+
+" grep検索結果の再呼出
+nnoremap <silent> ,r  :<C-u>UniteResume search-buffer<CR>
+
+" unite grep に ag(The Silver Searcher) を使う
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+  let g:unite_source_grep_recursive_opt = ''
+endif
 """"""""""""""""""""""""""""""
 
 " NERDTreeToggle"
@@ -195,15 +223,26 @@ call NERDTreeHighlightFile('js',     'lightgreen',   'none', '#CCFFCC', '#CCFFCC
   set statusline+=%=    " 左寄せ項目と右寄せ項目の区切り
 
 let g:ale_linters = {
-      \ 'ruby': ['rubocop']
+      \ 'ruby': ['rubocop'],
+      \ 'go': ['golint'],
+      \ 'scss': ['stylelint'],
+      \ 'javascript': ['eslint'],
+      \ 'slim': ['slim_lint']
       \ }
 
 let g:ale_fixers = {
-      \ 'ruby': ['rubocop']
+      \ 'ruby': ['rubocop'],
+      \ 'go': ['golint'],
+      \ 'scss': ['stylelint'],
+      \ 'javascript': ['eslint'],
+      \ 'typescript': ['tslint']
       \ }
 
 let g:ale_sign_error = '!'
-let g:ale_sign_warning = '-'
+let g:ale_sign_warning = '?'
+let g:ale_ruby_rubocop_executable = 'bundle'
+let g:ale_fix_on_save = 0
+highlight ALEWarning ctermbg=88
 nnoremap <C-F> :ALEFix<CR>
 
 let g:ref_refe_cmd = $HOME.'/.rbenv/shims/refe' "refeコマンドのパス
@@ -233,7 +272,7 @@ nnoremap so <C-w>_<C-w>
 nnoremap sO <C-w>=
 nnoremap sN :<C-u>bn<CR>
 nnoremap sP :<C-u>bp<CR>
-nnoremap st :<C-u>tabnew<CR>
+nnoremap st :<C-u>tabnew<CR>:e Gemfile<CR>
 nnoremap sT :<C-u>Unite tab<CR>
 nnoremap ss :<C-u>sp<CR>
 nnoremap sv :<C-u>vs<CR>
@@ -283,7 +322,7 @@ nnoremap <C-d> :%s///g
 "単語選択
 vnoremap h iw
 noremap ff viw
-noremap ffv ciw<C-r>0<ESC>
+noremap ffh ciw<C-r>0<ESC>
 
 " 全体コピー
 nnoremap  <C-a>  ggV G
@@ -293,12 +332,7 @@ inoremap nn <C-p>
 inoremap <expr> <C-k> pumvisible() ? "\<C-n>" : "\<C-k>"
 inoremap <expr> <C-i> pumvisible() ? "\<C-p>" : "\<C-i>"
 
-set completeopt=menuone
-for k in split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_",'\zs')
-  exec "imap <expr> " . k . " pumvisible() ? '" . k . "' : '" . k . "\<C-X>\<C-P>\<C-N>'"
-endfor
-
-nnoremap  <C-n> :set nonumber<CR>
+nnoremap  <C-n> :set number<CR>
 
 "空行挿入"
 nnoremap 0 :<C-u>call append(expand('.'), '')<Cr>j
@@ -311,3 +345,4 @@ noremap qq :w<CR>
 nnoremap rr :source ~/.vimrc<CR>
 
 nnoremap vim :e ~/.vimrc<CR>
+nnoremap gem :e Gemfile<CR>
