@@ -15,7 +15,9 @@ highlight Visual ctermbg=248
 hi TabLineFill ctermfg=16
 hi TabLine ctermfg=251 ctermbg=16 cterm=none
 hi TabLineSel cterm=underline ctermbg=17 ctermfg=white
-hi VertSplit ctermfg=16 ctermbg=16   cterm=none
+hi VertSplit ctermfg=17 ctermbg=NONE cterm=none
+
+set fillchars+=vert:\▏
 
 hi StatusLine ctermfg=17
 hi StatusLineNC ctermfg=235 ctermbg=251
@@ -25,7 +27,15 @@ hi CursorLineNr term=bold   cterm=NONE ctermfg=white ctermbg=NONE
 hi Comment ctermfg=241
 highlight EndOfBuffer ctermfg=black ctermbg=black
 
+let g:gitgutter_override_sign_column_highlight = 0
+highlight SignColumn ctermbg=NONE
+highlight GitGutterAdd ctermbg=NONE
+highlight GitGutterChange ctermbg=NONE
+highlight GitGutterDelete ctermbg=NONE
+highlight GitGutterChangeDelete ctermbg=NONE
+
 " for performance
+set redrawtime=10000
 set re=1
 set nocursorline
 set norelativenumber
@@ -74,6 +84,8 @@ nnoremap <silent>cfp :CopyFullPath<CR>
 call plug#begin('~/.vim/plugged')
 
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+Plug 'hashivim/vim-terraform'
 let g:go_bin_path = $GOPATH.'/bin'
 filetype plugin indent on
 
@@ -111,15 +123,11 @@ Plug 'airblade/vim-gitgutter'
 
 Plug 'pangloss/vim-javascript'
 Plug 'tpope/vim-fugitive'
-Plug 'leafgarland/typescript-vim'
-
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
 
 let g:deoplete#enable_at_startup = 1
 
 call plug#end()
-""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""
 
 set laststatus=2
 
@@ -137,18 +145,19 @@ let g:lightline = {
       \ }
     \ }
 
-""""""""""""""""""""""""""""""
-" Unit.vimの設定
-""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""
+"" Unit.vimの設定
+"""""""""""""""""""""""""""""""
 " 入力モードで開始する
 let g:unite_enable_start_insert=1
 " バッファ一覧
 noremap <C-P> :Unite buffer<CR>
 " ファイル一覧
-noremap <C-H> :Unite -buffer-name=file file<CR>
+nnoremap <C-H> :<C-u>Unite file_rec/git<CR>
 
 " 最近使ったファイルの一覧
 noremap <C-Z> :Unite file_mru<CR>
+nnoremap <C-C> :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
 " grep検索
 nnoremap <silent> ,g  :Unite grep<CR>
 " sourcesを「今開いているファイルのディレクトリ」とする
@@ -159,9 +168,6 @@ au FileType unite inoremap <silent> <buffer> <expr> <C-J> unite#do_action('split
 " ウィンドウを縦に分割して開く
 au FileType unite nnoremap <silent> <buffer> <expr> <C-K> unite#do_action('vsplit')
 au FileType unite inoremap <silent> <buffer> <expr> <C-K> unite#do_action('vsplit')
-" ESCキーを2回押すと終了する
-au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
-au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
 
 au FileType unite nnoremap <silent> <buffer> i <ESC>k<CR>
 
@@ -229,6 +235,7 @@ let g:ale_linters = {
       \ 'javascript': ['eslint'],
       \ 'slim': ['slim_lint']
       \ }
+      "\ 'yaml': ['yamllint']
 
 let g:ale_fixers = {
       \ 'ruby': ['rubocop'],
@@ -242,7 +249,9 @@ let g:ale_sign_error = '!'
 let g:ale_sign_warning = '?'
 let g:ale_ruby_rubocop_executable = 'bundle'
 let g:ale_fix_on_save = 0
-highlight ALEWarning ctermbg=88
+highlight ALEWarning ctermbg=DarkBlue
+highlight ALEError ctermbg=DarkRed
+
 nnoremap <C-F> :ALEFix<CR>
 
 let g:ref_refe_cmd = $HOME.'/.rbenv/shims/refe' "refeコマンドのパス
@@ -305,14 +314,13 @@ noremap aj ^
 noremap al $
 noremap <Space>l w
 noremap <Space>j b
-noremap <C-i> 50k
-noremap <C-k> 50j
+noremap <C-i> 30k
+noremap <C-k> 30j
 
 "変更履歴"
 nnoremap gj g;
 nnoremap gl g,
 
-"move to insert mode"
 noremap h i
 noremap oo <Esc>$a
 inoremap oo <Esc>$a
