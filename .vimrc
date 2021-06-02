@@ -1,6 +1,5 @@
 set encoding=utf-8
 " Color
-
 autocmd ColorScheme * highlight Normal ctermbg=none
 autocmd ColorScheme * highlight LineNr ctermbg=none
 
@@ -8,11 +7,15 @@ syntax enable
 set t_Co=256
 colorscheme molokai
 
-highlight Normal ctermbg=NONE
+hi Normal guibg=NONE ctermbg=NONE
+highlight NonText ctermbg=none
+highlight Folded ctermbg=none
+highlight EndOfBuffer ctermbg=none
 highlight LineNr ctermfg=244
 highlight Visual ctermbg=248
 
-hi TabLineFill ctermfg=16
+
+hi TabLineFill ctermfg=none ctermbg=none cterm=none
 hi TabLine ctermfg=251 ctermbg=16 cterm=none
 hi TabLineSel cterm=underline ctermbg=17 ctermfg=white
 hi VertSplit ctermfg=17 ctermbg=NONE cterm=none
@@ -25,7 +28,7 @@ hi StatusLineNC ctermfg=235 ctermbg=251
 hi CursorLineNr term=bold   cterm=NONE ctermfg=white ctermbg=NONE
 
 hi Comment ctermfg=241
-highlight EndOfBuffer ctermfg=black ctermbg=black
+highlight EndOfBuffer ctermfg=none ctermbg=none
 
 let g:gitgutter_override_sign_column_highlight = 0
 highlight SignColumn ctermbg=NONE
@@ -35,12 +38,12 @@ highlight GitGutterDelete ctermbg=NONE
 highlight GitGutterChangeDelete ctermbg=NONE
 
 " for performance
-set redrawtime=10000
-set re=1
-set nocursorline
-set norelativenumber
-set nocursorcolumn
-set guicursor=
+"set redrawtime=10000
+"set re=1
+"set nocursorline
+"set norelativenumber
+"set nocursorcolumn
+"set guicursor=
 " set synmaxcol=180
 " syntax sync minlines=100 maxlines=1000
 
@@ -124,6 +127,14 @@ Plug 'airblade/vim-gitgutter'
 Plug 'pangloss/vim-javascript'
 Plug 'tpope/vim-fugitive'
 
+Plug 'leafgarland/typescript-vim'
+
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+" AI suggest
+Plug 'codota/tabnine-vim'
+
 let g:deoplete#enable_at_startup = 1
 
 call plug#end()
@@ -153,7 +164,12 @@ let g:unite_enable_start_insert=1
 " バッファ一覧
 noremap <C-P> :Unite buffer<CR>
 " ファイル一覧
-nnoremap <C-H> :<C-u>Unite file_rec/git<CR>
+noremap <C-H> :Unite -buffer-name=file file<CR>
+nnoremap hh :<C-u>Unite file_rec/git<CR>
+nnoremap <C-S> :FZFFileList<CR>
+command! FZFFileList call fzf#run({
+            \ 'source': 'find . -type d -name .git -prune -o ! -name .DS_Store',
+            \ 'sink': 'e'})
 
 " 最近使ったファイルの一覧
 noremap <C-Z> :Unite file_mru<CR>
@@ -281,7 +297,7 @@ nnoremap so <C-w>_<C-w>
 nnoremap sO <C-w>=
 nnoremap sN :<C-u>bn<CR>
 nnoremap sP :<C-u>bp<CR>
-nnoremap st :<C-u>tabnew<CR>:e Gemfile<CR>
+nnoremap st :<C-u>tabnew<CR>
 nnoremap sT :<C-u>Unite tab<CR>
 nnoremap ss :<C-u>sp<CR>
 nnoremap sv :<C-u>vs<CR>
