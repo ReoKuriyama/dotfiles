@@ -1,3 +1,44 @@
+{
+  "vim.useSystemClipboard": true,
+  "keyboard.dispatch": "keyCode",
+  "vim.insertModeKeyBindings": [
+    {
+      "before": ["j", "j"],
+      "after": ["<Esc>"]
+    },
+    {
+      "before": ["n", "n"],
+      "after": ["<C-p>"]
+    },
+    {
+      "before": ["<C-k>"],
+     "after": ["<C-n>"]
+    },
+    {
+      "before": ["<C-i>"],
+      "after": ["<C-p>"]
+    },
+    {
+      "before": ["q", "q"],
+      "after": ["<Esc>", ":w", "<CR>"]
+    },
+    {
+      "before": ["o", "o"],
+      "after": ["<Esc>", "$", "a"]
+    }
+  ],
+
+  "vim.normalModeKeyBindingsNonRecursive": [
+    { "before": ["i"], "after": ["k"] },
+    { "before": ["j"], "after": ["h"] },
+    { "before": ["k"], "after": ["j"] },
+    { "before": ["h"], "after": ["i"] },
+    { "before": ["<Space>", "l"], "after": ["w"] },
+    { "before": ["<Space>", "j"], "after": ["b"] },
+    { "before": ["g", "j"], "after": ["g;"] },
+    { "before": ["g", "l"], "after": ["g,"] },
+    { "before": ["f", "f"], "after": ["v", "i", "w"] },
+    { "before": ["<C-a>"], "after": ["gg", "V", "G"] },
     { "before": ["s", "k"], "commands": ["workbench.action.focusBelowGroup"] },
     { "before": ["s", "i"], "commands": ["workbench.action.focusAboveGroup"] },
     { "before": ["s", "l"], "commands": ["workbench.action.focusRightGroup"] },
@@ -10,7 +51,7 @@
     { "before": ["s", "="], "commands": ["workbench.action.evenEditorWidths"] },
     { "before": ["sw"], "commands": ["workbench.action.navigateEditorGroups"] },
     { "before": ["e", "e"], "commands": ["workbench.action.files.revert"] },
-    { "before": ["q", "q"], "commands": ["workbench.action.files.save"] }
+    { "before": ["q", "q"], "commands": ["workbench.action.files.save"] }  { "before": ["<C-n>"], "commands": ["workbench.action.toggleEditorLineNumbers"] },
     {
       "before": ["a", "j"],
       "after": ["^"]
