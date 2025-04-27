@@ -1,0 +1,52 @@
+    { "before": ["s", "k"], "commands": ["workbench.action.focusBelowGroup"] },
+    { "before": ["s", "i"], "commands": ["workbench.action.focusAboveGroup"] },
+    { "before": ["s", "l"], "commands": ["workbench.action.focusRightGroup"] },
+    { "before": ["s", "j"], "commands": ["workbench.action.focusLeftGroup"] },
+    { "before": ["<C-l>"], "commands": ["workbench.action.nextEditor"] },
+    { "before": ["<C-j>"], "commands": ["workbench.action.previousEditor"] },
+    { "before": ["<C-k>"], "commands": ["cursorMove", { "to": "down", "by": "line", "value": 30 }] },
+    { "before": ["<C-i>"], "commands": ["cursorMove", { "to": "up", "by": "line", "value": 30 }] },
+    { "before": ["s", "r"], "commands": ["workbench.action.navigateEditorGroups"] },
+    { "before": ["s", "="], "commands": ["workbench.action.evenEditorWidths"] },
+    { "before": ["sw"], "commands": ["workbench.action.navigateEditorGroups"] },
+    { "before": ["e", "e"], "commands": ["workbench.action.files.revert"] },
+    { "before": ["q", "q"], "commands": ["workbench.action.files.save"] }
+    {
+      "before": ["a", "j"],
+      "after": ["^"]
+    },
+    {
+      "before": ["a", "l"],
+      "after": ["$"]
+    }
+  ],
+
+  "vim.visualModeKeyBindingsNonRecursive": [
+    { "before": ["i"], "after": ["k"] },
+    { "before": ["j"], "after": ["h"] },
+    { "before": ["k"], "after": ["j"] },
+    {
+      "before": ["j", "l"],
+      "after": ["<Esc>"]
+    },
+    {
+      "before": ["h"],
+      "after": ["i", "w"]
+    }
+  ],
+
+  "vim.tabstop": 3,
+  "vim.shiftwidth": 3,
+  "vim.expandtab": true,
+  "vim.cursorline": true,
+
+  // 説明用（コメント代わり）
+  "vim.customComments": {
+    "jjでノーマルモードに戻る": true,
+    "Ctrl-k/iの補完移動調整": true,
+    "qqで保存": true,
+    "ooで行末入力": true
+  },
+  "editor.tabSize": 3,
+  "editor.insertSpaces": true
+}
